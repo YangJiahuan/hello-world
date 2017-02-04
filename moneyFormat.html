@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Format Money</title>
+</head>
+<script type="text/javascript">
+/**
+ * 金额格式化，整数部分每三位用逗号隔开
+ */
+function moneyFormat(value){
+	if(!value){
+		return "0.00";
+	}
+	if(isNaN(value)){
+		return value;
+	}
+	
+	//格式化数字，四舍五入保留两位小数
+	var f = value * 100;
+	var value = Math.round(f)/100;
+	
+	//判断是否包含小数点，只格式化整数部分
+	var moneyInt = value + "";//记录整数部分
+	var moneyFloat = "00";//记录小数部分，默认为两位小数00
+	var flag = "";//记录正负号
+	if(moneyInt.indexOf(".") > -1){
+		moneyFloat = moneyInt.substring(moneyInt.indexOf(".")+1,moneyInt.length);
+		moneyInt = moneyInt.substring(0,moneyInt.indexOf("."));
+	}
+	if(moneyInt.indexOf("-") > -1){
+		flag = "-";
+		moneyInt = moneyInt.substring(1,moneyInt.length);
+	}
+	
+	//整数部分不超过三位，直接返回
+	if(moneyInt.length <= 3){
+		return flag + moneyInt + "." + moneyFloat;
+	}
+	var mod = moneyInt.length % 3;
+    var output = (mod == 0 ? '' : (moneyInt.substring(0, mod)));
+    for (i = 0; i < Math.floor(moneyInt.length / 3); i++) {
+        if ((mod == 0) && (i == 0))
+            output += moneyInt.substring(mod + 3 * i, mod + 3 * i + 3);
+        else
+            output += ',' + moneyInt.substring(mod + 3 * i, mod + 3 * i + 3);
+    }
+    
+    return flag + output + "." + moneyFloat;
+}
+
+
+function formatMoney(){
+	//alert(moneyFormat(document.getElementById("number").value));
+	document.getElementById("result").innerHTML = moneyFormat(document.getElementById("number").value);
+}
+
+</script>
+
+<style>
+.content{
+	border:1px solid green;
+	width:500px;
+	height:100px;
+	text-align:left;
+	color:red;
+	overflow:show;
+	vertical-align:middle;
+}
+</style>
+<body>
+	输入数字：<input type = "text" id = "number"/><br>
+	<input type = "button" value = "格式化" onclick = "formatMoney()"/>
+	<div id = "result" class = "content"></div>
+
+</body>
+</html>
